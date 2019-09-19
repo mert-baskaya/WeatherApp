@@ -3,12 +3,9 @@ package com.example.watherapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView showTemperature;
     private TextView showPressure;
     private TextView showHumidity;
+    private TextView showDescription;
     private SwipeRefreshLayout swipeRefresh;
 
 
@@ -43,10 +41,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         new GetWeatherInfo().execute();
 
-        showCity = findViewById(R.id.activity_main_city_textView);
+        showCity = findViewById(R.id.main_city);
         showTemperature = findViewById(R.id.main_live_temp);
         showPressure = findViewById(R.id.main_live_pressure);
         showHumidity = findViewById(R.id.main_live_humidity);
+        showDescription = findViewById(R.id.main_live_description);
 
         swipeRefresh = findViewById(R.id.activity_main_swipeContainer);
 
@@ -155,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             showTemperature.setText(kelvinToCelsius(temp));
             showPressure.setText(hPa(pressure));
             showHumidity.setText(percentHumidity(humidity));
+            showDescription.setText(upperDescription(description));
 
             swipeRefresh.setRefreshing(false);
         }
@@ -170,5 +170,9 @@ public class MainActivity extends AppCompatActivity {
 
     private String percentHumidity(double humidity){
         return (humidity)+" %";
+    }
+
+    private String upperDescription(String description){
+        return description.toUpperCase();
     }
 }

@@ -13,7 +13,7 @@
         tools:context=".activities.MainActivity">
 
         <TextView
-            android:id="@+id/activity_main_city_textView"
+            android:id="@+id/main_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -21,6 +21,15 @@
             android:textAlignment="center"
             android:textSize="48sp"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/main_live_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintStart_toStartOf="@id/main_humidity"
+            app:layout_constraintTop_toBottomOf="@id/main_humidity" />
 
         <TextView
             android:id="@+id/main_temperature"
@@ -31,7 +40,7 @@
             android:text="@string/temperature"
             android:textAlignment="center"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/activity_main_city_textView" />
+            app:layout_constraintTop_toBottomOf="@id/main_city" />
 
         <TextView
             android:id="@+id/main_live_temp"
