@@ -1,7 +1,9 @@
 package com.example.watherapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,62 +22,45 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private double lon;
-    private double lat;
-    private int weatherId;
-    private String main;
-    private String description;
-    private String icon;
-    private String base;
-    private long temp;
-    private int pressure;
-    private int humidity;
-    private long temp_min;
-    private long temp_max;
-    private int visibility;
-    private long speed;
-    private int deg;
-    private String all;
-    private long dt;
-    private int type;
-    private int objectId;
-    private long message;
-    private String country;
-    private long sunrise;
-    private long sunset;
-    private int id;
-    private String name;
-    private int response;
-
     private String apiKey = "0d25b32b86547a3a204d7dccf7f17657";
 
-    private TextView cityNameTV;
-    private TextView humidityTV;
-    private TextView tempTV;
-    private TextView pressureTV;
-    private Button refresh;
+    int weatherId, visibility, deg;
+    String main, description, icon, base, all, country, name;
+    double lon, lat, pressure, humidity, type, objectId, id, response;
+    long temp, temp_min, temp_max, speed, dt, message, sunrise, sunset;
+
+    private TextView showCity;
+    private TextView showTemperature;
+    private TextView showPressure;
+    private TextView showHumidity;
+    private SwipeRefreshLayout swipeRefresh;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new GetWeatherInfo().execute();
-        cityNameTV = findViewById(R.id.activity_main_city_textView);
-        //humidityTV = findViewById(R.id.activity_main_humidity_textView);
-        tempTV = findViewById(R.id.activity_main_temp_textView);
-        //pressureTV = findViewById(R.id.activity_main_pressure_textView);
-        refresh = findViewById(R.id.activity_main_refresh_button);
 
+        showCity = findViewById(R.id.activity_main_city_textView);
+        showTemperature = findViewById(R.id.main_live_temp);
+        showPressure = findViewById(R.id.main_live_pressure);
+        showHumidity = findViewById(R.id.main_live_humidity);
 
+        swipeRefresh = findViewById(R.id.activity_main_swipeContainer);
 
-
-        refresh.setOnClickListener(new View.OnClickListener() {
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View view) {
+            public void onRefresh() {
                 new GetWeatherInfo().execute();
             }
         });
+
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     private class GetWeatherInfo extends AsyncTask<Void, Void, Void> {
@@ -87,9 +72,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+
             HttpHandler httpHandler = new HttpHandler();
 
-            String url = "https://api.openweathermap.org/data/2.5/weather?q=Istanbul,tr&appid="+apiKey;
+            String url = "https://api.openweathermap.org/data/2.5/weather?q=Istanbul,tr&appid=" + apiKey;
             String jsonStr = httpHandler.makeServiceCall(url);
 
             Log.e(TAG, "Response from URL" + jsonStr);
@@ -156,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 response = reader.getInt("cod");
 
             } catch (JSONException e) {
-                Log.e(TAG,""+e);
+                Log.e(TAG, "" + e);
             }
             return null;
         }
@@ -164,15 +150,25 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Toast.makeText(getApplicationContext(), "Updating resources", Toast.LENGTH_SHORT).show();
-            cityNameTV.setText(name);
-            //humidityTV.setText(humidity);
-            tempTV.setText(kelvinToCelsius(temp));
-            //pressureTV.setText(pressure);
+
+            showCity.setText(name);
+            showTemperature.setText(kelvinToCelsius(temp));
+            showPressure.setText(hPa(pressure));
+            showHumidity.setText(percentHumidity(humidity));
+
+            swipeRefresh.setRefreshing(false);
         }
     }
 
-    private String kelvinToCelsius(long kelvin){
-        return (kelvin-273)+" °C";
+    private String kelvinToCelsius(long kelvin) {
+        return (kelvin - 273) + " °C";
+    }
+
+    private String hPa(double pressure){
+        return (pressure)+" hPa";
+    }
+
+    private String percentHumidity(double humidity){
+        return (humidity)+" %";
     }
 }
