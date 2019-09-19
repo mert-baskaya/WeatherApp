@@ -32,18 +32,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Temp"
+        app:layout_constraintEnd_toStartOf="@id/activity_main_pressure_textView"
         app:layout_constraintStart_toEndOf="@id/activity_main_humidity_textView"
-        app:layout_constraintTop_toTopOf="@id/activity_main_humidity_textView"
-        app:layout_constraintEnd_toStartOf="@id/activity_main_pressure_textView"/>
+        app:layout_constraintTop_toTopOf="@id/activity_main_humidity_textView" />
 
     <TextView
         android:id="@+id/activity_main_pressure_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
         android:text="Pressure"
-        app:layout_constraintTop_toTopOf="@id/activity_main_temp_textView"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="24dp"/>
+        app:layout_constraintTop_toTopOf="@id/activity_main_temp_textView" />
+
+    <Button
+        android:id="@+id/activity_main_refresh_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

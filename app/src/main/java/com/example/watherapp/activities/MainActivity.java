@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,11 +20,6 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private TextView cityNameTV;
-    private TextView humidityTV;
-    private TextView tempTV;
-    private TextView pressureTV;
 
     private double lon;
     private double lat;
@@ -51,19 +48,34 @@ public class MainActivity extends AppCompatActivity {
     private String name;
     private int response;
 
+    private String apiKey = "0d25b32b86547a3a204d7dccf7f17657";
 
+    private TextView cityNameTV;
+    private TextView humidityTV;
+    private TextView tempTV;
+    private TextView pressureTV;
+    private Button refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        cityNameTV = findViewById(R.id.activity_main_city_textView);
-        humidityTV = findViewById(R.id.activity_main_humidity_textView);
-        tempTV = findViewById(R.id.activity_main_temp_textView);
-        pressureTV = findViewById(R.id.activity_main_pressure_textView);
-
         new GetWeatherInfo().execute();
+        cityNameTV = findViewById(R.id.activity_main_city_textView);
+        //humidityTV = findViewById(R.id.activity_main_humidity_textView);
+        tempTV = findViewById(R.id.activity_main_temp_textView);
+        //pressureTV = findViewById(R.id.activity_main_pressure_textView);
+        refresh = findViewById(R.id.activity_main_refresh_button);
+
+
+
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new GetWeatherInfo().execute();
+            }
+        });
     }
 
     private class GetWeatherInfo extends AsyncTask<Void, Void, Void> {
@@ -77,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             HttpHandler httpHandler = new HttpHandler();
 
-            String url = "https://samples.openweathermap.org/data/2.5/weather?q=London,uk&appid=b6907d289e10d714a6e88b30761fae22";
+            String url = "https://api.openweathermap.org/data/2.5/weather?q=Istanbul,tr&appid="+apiKey;
             String jsonStr = httpHandler.makeServiceCall(url);
 
             Log.e(TAG, "Response from URL" + jsonStr);
@@ -152,7 +164,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
+            Toast.makeText(getApplicationContext(), "Updating resources", Toast.LENGTH_SHORT).show();
+            cityNameTV.setText(name);
+            //humidityTV.setText(humidity);
+            tempTV.setText(kelvinToCelsius(temp));
+            //pressureTV.setText(pressure);
         }
+    }
+
+    private String kelvinToCelsius(long kelvin){
+        return (kelvin-273)+" °C";
     }
 }
